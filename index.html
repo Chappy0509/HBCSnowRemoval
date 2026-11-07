@@ -20,6 +20,7 @@
 }
 :root[data-theme="dark"]{--bg:#0c1830;--bg2:#10264a;--text:#e8f2fa;--muted:#9fb4c9;--card:#142a4f;--line:#26406a}
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--text);font:400 1.0625rem/1.6 var(--body)}
 h1,h2,h3{font-family:var(--head);font-style:italic;font-weight:800;line-height:1;margin:0}
@@ -81,6 +82,24 @@ h2{font-size:clamp(2.2rem,5vw,3.4rem);margin-bottom:.75rem}
 .pick{margin:0;font-weight:600}
 .actions{display:flex;flex-wrap:wrap;gap:.75rem}
 .btn.alt{background:transparent;color:var(--text);border:2px solid var(--ice)}
+.snowbtn{display:block;text-align:left;border:2px solid var(--line);border-radius:.3rem;background:var(--bg);color:var(--text);padding:.55rem .85rem;font:500 1rem var(--body);cursor:pointer;line-height:1.2}
+.snowbtn small{display:block;font-size:.8rem;color:var(--muted)}
+.snowbtn[aria-pressed=true]{background:var(--ice);border-color:var(--ice);color:#0a1a35}
+.snowbtn[aria-pressed=true] small{color:#0a1a35}
+.cal{max-width:23rem;border:1px solid var(--line);border-radius:.3rem;padding:.75rem;background:var(--bg);margin-top:.75rem}
+.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem}
+.cal-head strong{font:800 italic 1.5rem/1 var(--head)}
+.cal-head button{width:2.5rem;height:2.5rem;border:1px solid var(--line);background:var(--card);color:var(--text);border-radius:.3rem;cursor:pointer;font-size:1.2rem;line-height:1}
+.cal-head button:disabled{opacity:.3;cursor:default}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:.25rem}
+.cal-grid .dow{font-size:.75rem;color:var(--muted);text-align:center;padding:.2rem 0;font-weight:600}
+.cal-grid button{min-height:2.5rem;border:0;border-radius:.3rem;background:var(--card);color:var(--text);font:500 .95rem var(--body);cursor:pointer;padding:0}
+.cal-grid button:hover:not(:disabled){outline:2px solid var(--ice)}
+.cal-grid button:disabled{background:transparent;color:var(--muted);opacity:.4;cursor:default}
+.cal-grid button.today{box-shadow:inset 0 0 0 2px var(--line)}
+.cal-grid button[aria-pressed=true]{background:var(--ice);color:#0a1a35;font-weight:700}
+.pick.done{color:var(--text);background:var(--bg2);border-radius:.3rem;padding:.7rem .9rem}
+.sched{position:relative}
 .about{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:2.5rem;align-items:start}
 .about p{margin:0 0 1rem;max-width:34rem}
 form{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:1.5rem;display:grid;gap:1rem}
@@ -162,10 +181,12 @@ footer a{color:var(--ice)}
     <form id="sf" class="sched">
       <fieldset>
         <legend>Day</legend>
-        <div class="chips" id="days"></div>
+        <button type="button" class="snowbtn" id="snow" aria-pressed="true"><b>Next snow</b><small>we come after it falls</small></button>
+        <div class="cal" id="cal"></div>
+        <input type="hidden" name="day" id="dayval">
       </fieldset>
       <fieldset>
-        <legend>Time of day</legend>
+        <legend>Time window</legend>
         <div class="chips" id="slots"></div>
       </fieldset>
       <div class="row">
@@ -182,12 +203,15 @@ footer a{color:var(--ice)}
       </div>
       <label>Address<input name="addr" required autocomplete="street-address"></label>
       <label>Notes (optional)<textarea name="notes" placeholder="Gate code, where to pile snow, anything we should know"></textarea></label>
+      <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0">
       <p class="pick" id="pick" aria-live="polite"></p>
       <div class="actions">
-        <button class="btn" type="submit" id="s-email">Email this request</button>
+        <button class="btn" type="submit" id="s-main">Email this request</button>
+        <button class="btn alt" type="button" id="s-email" hidden>Email this request</button>
         <button class="btn alt" type="button" id="s-text">Text this request</button>
       </div>
-      <p class="note">Your email or messages app opens with the request filled in. Nothing is booked until we confirm with you.</p>
+      <p class="pick done" id="done" role="status" hidden></p>
+      <p class="note" id="s-note">Your email or messages app opens with the request filled in. Nothing is booked until we confirm with you.</p>
     </form>
   </div>
 </section>
@@ -278,26 +302,20 @@ footer a{color:var(--ice)}
   /* ============ EDIT THESE ============
      Everything you're likely to change is in this block. */
   var CONFIG={
-    // Shown above the scheduler and in the footer.
-    hoursLead:'We book any time, day or night.',
-    hoursFooter:'Open 24/7 during snow. Call or text anytime.',
-    // How many days ahead people can pick (not counting "Next snow").
-    daysAhead:14,
-    // Time windows people can choose. Add, remove, or rename freely.
-    // 'time' is shown under the name. Leave it '' for no hours.
-    // Mark one with isDefault:true to pre-select it.
-    slots:[
-      {name:'Overnight', time:'12 AM – 6 AM'},
-      {name:'Morning',   time:'6 AM – 10 AM'},
-      {name:'Midday',    time:'10 AM – 2 PM'},
-      {name:'Afternoon', time:'2 PM – 6 PM'},
-      {name:'Evening',   time:'6 PM – 12 AM'},
-      {name:'Any time',  time:'', isDefault:true}
-    ],
+    // Booking hours, 24-hour clock. 5 = 5 AM, 19 = 7 PM.
+    openHour:5,
+    closeHour:19,
+    // Length of each time window people can pick, in hours.
+    windowHours:3,
+    // How many days ahead people can book.
+    daysAhead:90,
     // Days you can't take jobs, as 'YYYY-MM-DD'. Example: ['2026-12-25']
     closedDates:[],
     // Snow depth that triggers a seasonal-plan visit, shown in the Seasonal card.
-    triggerDepth:'2 inches'
+    triggerDepth:'2 inches',
+    // Paste your Google Apps Script web app URL here to send bookings straight
+    // to your Google Calendar (see GOOGLE-CALENDAR-SETUP.txt). Leave '' to use email/text only.
+    scriptUrl:''
   };
   /* ============ END OF EDITS ============ */
 
@@ -324,61 +342,124 @@ footer a{color:var(--ice)}
       : 'sms:'+PHONE+'?&body='+encodeURIComponent(body);
   });
 
-  // Fill in hours and trigger text from CONFIG.
-  document.getElementById('hours-lead').textContent=CONFIG.hoursLead;
-  document.getElementById('hours-foot').textContent=CONFIG.hoursFooter;
+  // Hours text from CONFIG.
+  function fmtHour(h){var ap=h>=12&&h<24?'PM':'AM',x=h%12;return (x===0?12:x)+' '+ap;}
+  var HOURS=fmtHour(CONFIG.openHour)+' to '+fmtHour(CONFIG.closeHour);
+  document.getElementById('hours-lead').textContent='Booking hours are '+HOURS+'.';
+  document.getElementById('hours-foot').textContent='Hours: '+HOURS;
   document.getElementById('trigger').textContent=CONFIG.triggerDepth;
 
-  // Scheduling: "After the next snowfall" plus the next CONFIG.daysAhead open days, and CONFIG.slots.
+  // Scheduler: month calendar + time windows.
   (function(){
-    var dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    var sf=document.getElementById('sf'),pick=document.getElementById('pick');
-    function chip(box,name,val,top,sub,checked){
+    var dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+        mnLong=['January','February','March','April','May','June','July','August','September','October','November','December'],
+        mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var sf=document.getElementById('sf'),pick=document.getElementById('pick'),
+        calEl=document.getElementById('cal'),dayval=document.getElementById('dayval'),snow=document.getElementById('snow'),
+        done=document.getElementById('done');
+    function pad(n){return String(n).padStart(2,'0');}
+    function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
+    function fromIso(s){var p=s.split('-');return new Date(+p[0],+p[1]-1,+p[2]);}
+    var today=new Date();today=new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    var maxDate=new Date(today.getFullYear(),today.getMonth(),today.getDate()+CONFIG.daysAhead);
+    var view=new Date(today.getFullYear(),today.getMonth(),1);
+    var sel=null; // 'YYYY-MM-DD' or null meaning "after the next snowfall"
+
+    // Time windows built from open/close hours.
+    var slots=[];
+    for(var h=CONFIG.openHour;h<CONFIG.closeHour;h+=CONFIG.windowHours){
+      var e=Math.min(h+CONFIG.windowHours,CONFIG.closeHour);
+      slots.push({label:fmtHour(h)+' – '+fmtHour(e),start:h,end:e});
+    }
+    slots.push({label:'Any time',sub:HOURS,start:CONFIG.openHour,end:CONFIG.closeHour,isDefault:true});
+    var slotBox=document.getElementById('slots');
+    slots.forEach(function(x,i){
       var l=document.createElement('label');l.className='chip';
-      var i=document.createElement('input');i.type='radio';i.name=name;i.value=val;i.checked=!!checked;
-      var sp=document.createElement('span');sp.appendChild(document.createTextNode(top));
-      if(sub){var sm=document.createElement('small');sm.textContent=sub;sp.appendChild(sm);}
-      l.appendChild(i);l.appendChild(sp);box.appendChild(l);
-    }
-    function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+      var inp=document.createElement('input');inp.type='radio';inp.name='tod';inp.value=String(i);inp.checked=!!x.isDefault;
+      var sp=document.createElement('span');sp.appendChild(document.createTextNode(x.label));
+      if(x.sub){var sm=document.createElement('small');sm.textContent=x.sub;sp.appendChild(sm);}
+      l.appendChild(inp);l.appendChild(sp);slotBox.appendChild(l);
+    });
+    function curSlot(){var r=sf.querySelector('input[name=tod]:checked');return slots[r?+r.value:slots.length-1];}
 
-    var days=document.getElementById('days');
-    chip(days,'day','After the next snowfall','Next snow','we come after it falls',true);
-    var t=new Date(),shown=0,k=0;
-    while(shown<CONFIG.daysAhead&&k<CONFIG.daysAhead+60){
-      var d=new Date(t.getFullYear(),t.getMonth(),t.getDate()+k);k++;
-      if(CONFIG.closedDates.indexOf(iso(d))>-1)continue;
-      var label=k===1?'Today':k===2?'Tomorrow':dn[d.getDay()];
-      chip(days,'day',dn[d.getDay()]+', '+mn[d.getMonth()]+' '+d.getDate(),label,mn[d.getMonth()]+' '+d.getDate());
-      shown++;
+    function enabled(d){return d>=today&&d<=maxDate&&CONFIG.closedDates.indexOf(iso(d))===-1;}
+    function render(){
+      calEl.innerHTML='';
+      var head=document.createElement('div');head.className='cal-head';
+      var prev=document.createElement('button');prev.type='button';prev.textContent='‹';prev.setAttribute('aria-label','Previous month');
+      var next=document.createElement('button');next.type='button';next.textContent='›';next.setAttribute('aria-label','Next month');
+      var title=document.createElement('strong');title.textContent=mnLong[view.getMonth()]+' '+view.getFullYear();title.setAttribute('aria-live','polite');
+      prev.disabled=view<=new Date(today.getFullYear(),today.getMonth(),1);
+      next.disabled=new Date(view.getFullYear(),view.getMonth()+1,1)>maxDate;
+      prev.onclick=function(){view=new Date(view.getFullYear(),view.getMonth()-1,1);render();};
+      next.onclick=function(){view=new Date(view.getFullYear(),view.getMonth()+1,1);render();};
+      head.appendChild(prev);head.appendChild(title);head.appendChild(next);calEl.appendChild(head);
+      var g=document.createElement('div');g.className='cal-grid';
+      dn.forEach(function(n){var c=document.createElement('div');c.className='dow';c.textContent=n;g.appendChild(c);});
+      for(var i=0;i<view.getDay();i++){g.appendChild(document.createElement('span'));}
+      var days=new Date(view.getFullYear(),view.getMonth()+1,0).getDate();
+      for(var n=1;n<=days;n++){
+        var d=new Date(view.getFullYear(),view.getMonth(),n),b=document.createElement('button');
+        b.type='button';b.textContent=n;b.disabled=!enabled(d);
+        b.setAttribute('aria-label',dn[d.getDay()]+', '+mnLong[d.getMonth()]+' '+n);
+        b.setAttribute('aria-pressed',sel===iso(d)?'true':'false');
+        if(d.getTime()===today.getTime())b.className='today';
+        (function(dd){b.onclick=function(){sel=iso(dd);update();render();};})(d);
+        g.appendChild(b);
+      }
+      calEl.appendChild(g);
     }
+    snow.onclick=function(){sel=null;update();render();};
 
-    var slots=document.getElementById('slots'),slotTime={};
-    var def=CONFIG.slots.filter(function(x){return x.isDefault})[0]||CONFIG.slots[0];
-    CONFIG.slots.forEach(function(x){slotTime[x.name]=x.time;chip(slots,'tod',x.name,x.name,x.time,x===def);});
+    function dayText(){
+      if(!sel)return 'After the next snowfall';
+      var d=fromIso(sel);return dn[d.getDay()]+', '+mn[d.getMonth()]+' '+d.getDate();
+    }
+    function summary(){return sel?dayText()+', '+curSlot().label:'After the next snowfall';}
+    function update(){
+      snow.setAttribute('aria-pressed',sel?'false':'true');
+      dayval.value=dayText();
+      pick.textContent='Requested: '+summary();
+      done.hidden=true;
+    }
+    sf.addEventListener('change',update);
 
-    function slotText(){
-      var tm=sf.querySelector('input[name=tod]:checked');if(!tm)return '';
-      var n=tm.value;return slotTime[n]?n.toLowerCase()+' ('+slotTime[n]+')':n.toLowerCase();
+    function gcalLink(d){
+      if(!sel)return '';
+      var s=curSlot(),ymd=sel.replace(/-/g,'');
+      return 'https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('HBC: '+d.get('svc')+' - '+d.get('name'))+
+        '&dates='+ymd+'T'+pad(s.start)+'0000/'+ymd+'T'+pad(s.end)+'0000&ctz=America/Chicago&location='+encodeURIComponent(d.get('addr'))+
+        '&details='+encodeURIComponent('Phone: '+d.get('phone')+'\n'+d.get('freq')+'\n'+(d.get('notes')||''));
     }
-    function summary(){
-      var d=sf.querySelector('input[name=day]:checked'),day=d?d.value:'';
-      return day==='After the next snowfall'?'After the next snowfall':day+', '+slotText();
-    }
-    function show(){pick.textContent='Requested: '+summary();}
-    sf.addEventListener('change',show);show();
-    function send(mode){
-      if(!sf.reportValidity())return;
-      var d=new FormData(sf);
-      var body='HBC Snow Removal job request\nWhen: '+summary()+(d.get('day')==='After the next snowfall'?' (preferred time: '+slotText()+')':'')+
+    function bodyText(d,withCal){
+      var t='HBC Snow Removal job request\nWhen: '+summary()+(sel?'':' (preferred time: '+curSlot().label+')')+
         '\nService: '+d.get('svc')+'\nHow often: '+d.get('freq')+'\nName: '+d.get('name')+'\nPhone: '+d.get('phone')+
         '\nAddress: '+d.get('addr')+'\nNotes: '+(d.get('notes')||'');
-      location.href=mode==='email'
-        ? 'mailto:'+EMAIL+'?subject='+encodeURIComponent('Job request: '+d.get('svc')+' ('+summary()+')')+'&body='+encodeURIComponent(body)
-        : 'sms:'+PHONE+'?&body='+encodeURIComponent(body);
+      var g=withCal?gcalLink(d):'';
+      return g?t+'\n\nAdd to Google Calendar: '+g:t;
     }
-    sf.addEventListener('submit',function(e){e.preventDefault();send('email');});
-    document.getElementById('s-text').addEventListener('click',function(){send('text');});
+    function viaApp(mode){
+      var d=new FormData(sf);
+      location.href=mode==='email'
+        ? 'mailto:'+EMAIL+'?subject='+encodeURIComponent('Job request: '+d.get('svc')+' ('+summary()+')')+'&body='+encodeURIComponent(bodyText(d,true))
+        : 'sms:'+PHONE+'?&body='+encodeURIComponent(bodyText(d,false));
+    }
+    function viaCalendar(){
+      var d=new FormData(sf),s=curSlot(),btn=document.getElementById('s-main');
+      var payload={name:d.get('name'),phone:d.get('phone'),addr:d.get('addr'),svc:d.get('svc'),freq:d.get('freq'),notes:d.get('notes')||'',
+        when:summary(),date:sel||'',startHour:s.start,endHour:s.end,pref:s.label,website:d.get('website')||''};
+      btn.disabled=true;btn.textContent='Sending…';
+      fetch(CONFIG.scriptUrl,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)})
+        .then(function(){done.textContent='Request sent for '+summary()+'. We’ll confirm by call or text.';done.hidden=false;sf.reset();sel=null;update();render();})
+        .catch(function(){done.textContent='That didn’t go through. Use Email or Text below, or call 262-379-9988.';done.hidden=false;})
+        .then(function(){btn.disabled=false;btn.textContent='Request this time';});
+    }
+    var main=document.getElementById('s-main'),em=document.getElementById('s-email');
+    if(CONFIG.scriptUrl){main.textContent='Request this time';em.hidden=false;document.getElementById('s-note').textContent='Your request goes straight to our calendar and we’ll confirm with you. Nothing is booked until we do.';}
+    sf.addEventListener('submit',function(e){e.preventDefault();if(!sf.reportValidity())return;if(CONFIG.scriptUrl)viaCalendar();else viaApp('email');});
+    document.getElementById('s-text').addEventListener('click',function(){if(sf.reportValidity())viaApp('text');});
+    em.addEventListener('click',function(){if(sf.reportValidity())viaApp('email');});
+    update();render();
   })();
 
   // Make it installable on a phone, like the trail cam app.
