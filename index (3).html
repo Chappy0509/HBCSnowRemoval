@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a1a35">
+<meta name="description" content="HBC Snow Removal in Elkhorn, WI. Driveway plowing, parking lots, walks, and salting. Call or text 262-379-9988.">
+<title>HBC Snow Removal | Elkhorn, WI</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a1a35'/%3E%3Ctext x='32' y='42' font-size='26' font-family='Arial' font-weight='900' text-anchor='middle' fill='%236fb4ea'%3EHBC%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800&family=Barlow:wght@400;500;600&display=swap">
+<style>
+:root{
+  --navy:#0a1a35; --deep:#10264a; --ice:#6fb4ea; --frost:#e8f2fa; --silver:#b9c4cf;
+  --bg:var(--frost); --bg2:#d6e6f3; --text:#0a1a35; --muted:#4a5f78; --card:#ffffff; --line:#bcd0e2;
+  --head:'Barlow Condensed','Arial Narrow',Impact,sans-serif; --body:'Barlow',system-ui,-apple-system,Segoe UI,Arial,sans-serif;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--bg:#0c1830;--bg2:#10264a;--text:#e8f2fa;--muted:#9fb4c9;--card:#142a4f;--line:#26406a}
+}
+:root[data-theme="dark"]{--bg:#0c1830;--bg2:#10264a;--text:#e8f2fa;--muted:#9fb4c9;--card:#142a4f;--line:#26406a}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:400 1.0625rem/1.6 var(--body)}
+h1,h2,h3{font-family:var(--head);font-style:italic;font-weight:800;line-height:1;margin:0}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+.wrap{max-width:68rem;margin:0 auto;padding:0 1.25rem}
+
+.hero{background:var(--navy);color:#e8f2fa;position:relative;padding:1.25rem 0 7.5rem;clip-path:polygon(0 0,100% 0,100% 80%,0 100%);overflow:hidden}
+.flakes{position:absolute;inset:0;pointer-events:none}
+.flakes i{position:absolute;top:-10px;border-radius:50%;background:#fff;opacity:.65;animation:fall linear infinite}
+@keyframes fall{to{transform:translate3d(30px,110vh,0)}}
+@media (prefers-reduced-motion:reduce){.flakes{display:none}html{scroll-behavior:auto}}
+.hero .wrap{position:relative}
+nav{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding-bottom:3.5rem}
+.logo{font:800 italic 1.7rem/1 var(--head);text-decoration:none;display:flex;align-items:baseline;gap:.5rem}
+.logo b{font-size:2.2rem;background:linear-gradient(#fff,var(--silver));-webkit-background-clip:text;background-clip:text;color:transparent}
+.logo span{color:var(--ice);font-size:1.15rem}
+nav a.call{font-weight:600;text-decoration:none;border:2px solid #6fb4ea88;padding:.5rem .9rem;border-radius:.3rem}
+nav a.call:hover{background:var(--ice);color:var(--navy)}
+.hero h1{font-size:clamp(3.2rem,11vw,7.5rem);max-width:11ch}
+.hero h1 span{display:block;color:var(--ice)}
+.hero p{max-width:34rem;font-size:1.2rem;color:#c3d3e4;margin:1.5rem 0 2rem}
+.btn{display:inline-block;background:var(--ice);color:var(--navy);font:800 italic 1.3rem/1 var(--head);padding:1rem 1.6rem;border-radius:.3rem;text-decoration:none;border:0;cursor:pointer}
+.btn:hover{filter:brightness(1.1)}
+.btn.ghost{background:transparent;color:#e8f2fa;border:2px solid #b9c4cf88;margin-left:.6rem}
+
+section{padding:4.5rem 0}
+h2{font-size:clamp(2.2rem,5vw,3.4rem);margin-bottom:.75rem}
+.lead{color:var(--muted);max-width:38rem;margin:0 0 2.5rem}
+.services{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.25rem}
+.svc{background:var(--card);border:1px solid var(--line);border-left:6px solid var(--ice);border-radius:.25rem;padding:1.4rem}
+.svc h3{font-size:1.7rem;margin-bottom:.5rem}
+.svc p{margin:0;color:var(--muted)}
+
+.band{background:var(--bg2)}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:2.5rem}
+.how ol{margin:0;padding:0;list-style:none;counter-reset:s}
+.how li{counter-increment:s;display:grid;grid-template-columns:2.4rem 1fr;gap:.9rem;margin-bottom:1.3rem}
+.how li::before{content:counter(s);font:800 italic 1.5rem/2.4rem var(--head);background:var(--navy);color:var(--ice);text-align:center;border-radius:50%;width:2.4rem;height:2.4rem}
+.how strong{display:block;font-weight:600}
+.how span{color:var(--muted)}
+.plans{display:grid;gap:1rem}
+.plan{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:1.2rem 1.4rem}
+.plan h3{font-size:1.5rem}
+.plan p{margin:.3rem 0 0;color:var(--muted)}
+
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:2.5rem;align-items:start}
+.about p{margin:0 0 1rem;max-width:34rem}
+form{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:1.5rem;display:grid;gap:1rem}
+label{display:grid;gap:.3rem;font-weight:600;font-size:.95rem}
+input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--line);border-radius:.25rem;padding:.7rem .8rem;width:100%}
+textarea{min-height:5.5rem;resize:vertical}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1rem}
+.note{font-size:.9rem;color:var(--muted);margin:0}
+footer{background:var(--navy);color:#b9c4cf;padding:2.5rem 0}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}
+footer a{color:var(--ice)}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="flakes" id="flakes" aria-hidden="true"></div>
+  <div class="wrap">
+    <nav>
+      <a class="logo" href="#"><b>HBC</b><span>Snow Removal</span></a>
+      <a class="call" href="tel:+12623799988">262-379-9988</a>
+    </nav>
+    <h1>Elkhorn’s snow,<span>handled.</span></h1>
+    <p>Plowing, shoveling, and salting for homes and small businesses in Elkhorn, WI, from a crew of three who answer our own phone.</p>
+    <a class="btn" href="#quote">Get a free quote</a><a class="btn ghost" href="#services">See services</a>
+  </div>
+</header>
+
+<main>
+<section id="services">
+  <div class="wrap">
+    <h2>What we clear</h2>
+    <p class="lead">Tell us what needs clearing and we’ll handle it, storm after storm.</p>
+    <div class="services">
+      <div class="svc"><h3>Driveway plowing</h3><p>Cleared edge to edge, so you can get out in the morning.</p></div>
+      <div class="svc"><h3>Parking lots</h3><p>Small businesses, offices, and churches, cleared before opening.</p></div>
+      <div class="svc"><h3>Walks and steps</h3><p>Hand-shoveled sidewalks, porches, steps, and paths to the door.</p></div>
+      <div class="svc"><h3>Salt and ice melt</h3><p>Treated after the plow so the surface doesn’t refreeze overnight.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="band">
+  <div class="wrap how">
+    <div>
+      <h2>How it works</h2>
+      <p class="lead">Simple pricing, no fine print.</p>
+      <ol>
+        <li><div><strong>Request a quote</strong><span>Text or call with your address and what you need cleared.</span></div></li>
+        <li><div><strong>We confirm the price</strong><span>You get a clear number before any work starts.</span></div></li>
+        <li><div><strong>We clear it when it snows</strong><span>Come out to a clean driveway.</span></div></li>
+      </ol>
+    </div>
+    <div class="plans">
+      <div class="plan"><h3>Seasonal</h3><p>One price for the whole winter. We come every time it snows past our trigger depth.</p></div>
+      <div class="plan"><h3>Per visit</h3><p>Pay only when we plow. Good if you only want us for the big storms.</p></div>
+      <div class="plan"><h3>One-time clear</h3><p>Buried after a big storm? We’ll dig you out.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="wrap about">
+    <div>
+      <h2>Three friends, one plow route</h2>
+      <p>HBC Snow Removal started with three buddies in Elkhorn who figured we could do it better. We’re local, we pick up the phone, and we treat your driveway like our own.</p>
+      <p>Every job gets the same standard: done right, done early, and priced fairly.</p>
+    </div>
+    <div id="quote">
+      <h2>Get a free quote</h2>
+      <form id="qf">
+        <div class="row">
+          <label>Name<input name="name" required autocomplete="name"></label>
+          <label>Phone<input name="phone" type="tel" required autocomplete="tel"></label>
+        </div>
+        <label>Address<input name="addr" required autocomplete="street-address"></label>
+        <label>What do you need?
+          <select name="svc"><option>Driveway plowing</option><option>Parking lot</option><option>Walks and steps</option><option>Salt and ice melt</option><option>Not sure yet</option></select>
+        </label>
+        <label>Details (optional)<textarea name="notes"></textarea></label>
+        <button class="btn" type="submit" id="send">Text us your request</button>
+        <p class="note" id="how-note">This opens a text message to 262-379-9988 with your request filled in.</p>
+      </form>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div><strong>HBC Snow Removal</strong><br>Elkhorn, WI and surrounding area</div>
+    <div><a href="tel:+12623799988">262-379-9988</a><br><a id="mail" href="#" hidden></a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  // Add your business email here once you have it, like 'hello@yourdomain.com'.
+  var EMAIL='';
+  var PHONE='+12623799988';
+
+  var f=document.getElementById('flakes');
+  for(var i=0;i<28;i++){var s=document.createElement('i'),z=3+Math.random()*5;
+    s.style.cssText='left:'+Math.random()*100+'%;width:'+z+'px;height:'+z+'px;animation-duration:'+(6+Math.random()*8)+'s;animation-delay:'+(-Math.random()*10)+'s';
+    f.appendChild(s);}
+
+  if(EMAIL){
+    var m=document.getElementById('mail');m.href='mailto:'+EMAIL;m.textContent=EMAIL;m.hidden=false;
+    document.getElementById('send').textContent='Email us your request';
+    document.getElementById('how-note').textContent='This opens your email app with your request filled in.';
+  }
+  document.getElementById('qf').addEventListener('submit',function(e){
+    e.preventDefault();
+    var d=new FormData(e.target);
+    var body='HBC Snow Removal quote request\nName: '+d.get('name')+'\nPhone: '+d.get('phone')+'\nAddress: '+d.get('addr')+'\nService: '+d.get('svc')+'\nDetails: '+(d.get('notes')||'');
+    location.href=EMAIL
+      ? 'mailto:'+EMAIL+'?subject='+encodeURIComponent('Quote request: '+d.get('svc'))+'&body='+encodeURIComponent(body)
+      : 'sms:'+PHONE+'?&body='+encodeURIComponent(body);
+  });
+
+  // Make it installable on a phone, like the trail cam app.
+  var man={name:'HBC Snow Removal',short_name:'HBC Snow',start_url:'./',display:'standalone',background_color:'#0a1a35',theme_color:'#0a1a35',
+    icons:[{src:"data:image/svg+xml,"+encodeURIComponent("<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' fill='#0a1a35'/><text x='32' y='42' font-size='26' font-family='Arial' font-weight='900' text-anchor='middle' fill='#6fb4ea'>HBC</text></svg>"),sizes:'any',type:'image/svg+xml',purpose:'any'}]};
+  var l=document.createElement('link');l.rel='manifest';
+  l.href=URL.createObjectURL(new Blob([JSON.stringify(man)],{type:'application/manifest+json'}));
+  document.head.appendChild(l);
+  if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){navigator.serviceWorker.register('sw.js').catch(function(){});}
+})();
+</script>
+</body>
+</html>
