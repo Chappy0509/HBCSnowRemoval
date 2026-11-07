@@ -7,7 +7,6 @@
 <meta name="description" content="HBC Snow Removal in Elkhorn, WI. Driveway plowing, parking lots, walks, and salting. Call or text 262-379-9988.">
 <title>HBC Snow Removal | Elkhorn, WI</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a1a35'/%3E%3Ctext x='32' y='42' font-size='26' font-family='Arial' font-weight='900' text-anchor='middle' fill='%236fb4ea'%3EHBC%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800&family=Barlow:wght@400;500;600&display=swap">
 <style>
 :root{
@@ -67,6 +66,21 @@ h2{font-size:clamp(2.2rem,5vw,3.4rem);margin-bottom:.75rem}
 .plan h3{font-size:1.5rem}
 .plan p{margin:.3rem 0 0;color:var(--muted)}
 
+
+.sched{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:1.5rem;display:grid;gap:1.25rem;max-width:44rem}
+.sched fieldset{border:0;margin:0;padding:0;min-width:0}
+.sched legend{font-weight:600;font-size:.95rem;padding:0;margin-bottom:.5rem}
+.chips{display:flex;flex-wrap:wrap;gap:.5rem}
+.chip{display:block;position:relative;font-weight:500}
+.chip input{position:absolute;opacity:0;inset:0;width:100%;height:100%;margin:0;cursor:pointer}
+.chip span{display:block;border:2px solid var(--line);border-radius:.3rem;padding:.55rem .85rem;line-height:1.2;text-align:center;background:var(--bg);min-width:4.2rem}
+.chip small{display:block;font-size:.8rem;color:var(--muted)}
+.chip input:checked + span{background:var(--ice);border-color:var(--ice);color:#0a1a35}
+.chip input:checked + span small{color:#0a1a35}
+.chip input:focus-visible + span{outline:3px solid var(--ice);outline-offset:2px}
+.pick{margin:0;font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:.75rem}
+.btn.alt{background:transparent;color:var(--text);border:2px solid var(--ice)}
 .about{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:2.5rem;align-items:start}
 .about p{margin:0 0 1rem;max-width:34rem}
 form{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:1.5rem;display:grid;gap:1rem}
@@ -75,13 +89,13 @@ input,select,textarea{font:inherit;color:var(--text);background:var(--bg);border
 textarea{min-height:5.5rem;resize:vertical}
 .row{display:grid;grid-template-columns:repeat(auto-fit,minmax(11rem,1fr));gap:1rem}
 .note{font-size:.9rem;color:var(--muted);margin:0}
-/* Outline-style map: dark base map tinted to the site's navy and ice blue, with Elkhorn outlined */
-.map{position:relative;height:26rem;border:2px solid var(--ice);border-radius:.25rem;overflow:hidden;background:#0a1a35;isolation:isolate}
-.map .leaflet-tile-pane{filter:grayscale(1) brightness(1.6) contrast(1.1);mix-blend-mode:screen}
-.map::after{content:"";position:absolute;inset:0;z-index:250;background:#6fb4ea;mix-blend-mode:multiply;pointer-events:none}
-.map .leaflet-control-attribution{background:#0a1a35cc;color:#9fb4c9;font-size:.7rem}
-.map .leaflet-control-attribution a{color:#6fb4ea}
-.map .leaflet-control-zoom a{background:#0a1a35;color:#6fb4ea;border-color:#26406a}
+.map{border:2px solid var(--ice);border-radius:.25rem;overflow:hidden;background:#0a1a35}
+.map svg{display:block;width:100%;height:auto}
+.map text{font-family:var(--head);font-style:italic;font-weight:800;paint-order:stroke;stroke:#0a1a35;stroke-width:4px;stroke-linejoin:round}
+.areagrid{display:grid;grid-template-columns:minmax(0,26rem) 1fr;gap:2.5rem;align-items:center}
+.areagrid .lead{margin-bottom:1rem}
+.areagrid p{margin:0 0 1rem;max-width:30rem}
+@media (max-width:48rem){.areagrid{grid-template-columns:1fr}}
 .callbar{display:none}
 @media (max-width:40rem){
   .callbar{display:block;position:fixed;left:0;right:0;bottom:0;z-index:10;background:var(--ice);color:var(--navy);text-align:center;font:800 italic 1.3rem/1 var(--head);text-decoration:none;padding:1rem 1rem calc(1rem + env(safe-area-inset-bottom,0px))}
@@ -104,7 +118,7 @@ footer a{color:var(--ice)}
     </nav>
     <h1>Elkhorn’s snow,<span>handled.</span></h1>
     <p>Plowing, shoveling, and salting for homes and small businesses in Elkhorn, WI, from a crew of three who answer our own phone.</p>
-    <a class="btn" href="#quote">Get a free quote</a><a class="btn ghost" href="#services">See services</a>
+    <a class="btn" href="#quote">Get a free quote</a><a class="btn ghost" href="#schedule">Schedule a job</a>
   </div>
 </header>
 
@@ -141,6 +155,49 @@ footer a{color:var(--ice)}
   </div>
 </section>
 
+<section id="schedule">
+  <div class="wrap">
+    <h2>Schedule a job</h2>
+    <p class="lead">Pick the day and time that work for you. We’ll confirm by call or text.</p>
+    <form id="sf" class="sched">
+      <fieldset>
+        <legend>Day</legend>
+        <div class="chips" id="days"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Time of day</legend>
+        <div class="chips">
+          <label class="chip"><input type="radio" name="tod" value="Morning" checked><span>Morning</span></label>
+          <label class="chip"><input type="radio" name="tod" value="Midday"><span>Midday</span></label>
+          <label class="chip"><input type="radio" name="tod" value="Afternoon"><span>Afternoon</span></label>
+          <label class="chip"><input type="radio" name="tod" value="Evening"><span>Evening</span></label>
+          <label class="chip"><input type="radio" name="tod" value="Any time"><span>Any time</span></label>
+        </div>
+      </fieldset>
+      <div class="row">
+        <label>Service
+          <select name="svc"><option>Driveway plowing</option><option>Parking lot</option><option>Walks and steps</option><option>Salt and ice melt</option><option>Not sure yet</option></select>
+        </label>
+        <label>How often?
+          <select name="freq"><option>Just this once</option><option>Every snowfall this season</option></select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Name<input name="name" required autocomplete="name"></label>
+        <label>Phone<input name="phone" type="tel" required autocomplete="tel"></label>
+      </div>
+      <label>Address<input name="addr" required autocomplete="street-address"></label>
+      <label>Notes (optional)<textarea name="notes" placeholder="Gate code, where to pile snow, anything we should know"></textarea></label>
+      <p class="pick" id="pick" aria-live="polite"></p>
+      <div class="actions">
+        <button class="btn" type="submit" id="s-email">Email this request</button>
+        <button class="btn alt" type="button" id="s-text">Text this request</button>
+      </div>
+      <p class="note">Your email or messages app opens with the request filled in. Nothing is booked until we confirm with you.</p>
+    </form>
+  </div>
+</section>
+
 <section id="about">
   <div class="wrap about">
     <div>
@@ -170,9 +227,45 @@ footer a{color:var(--ice)}
 <section class="band" id="area">
   <div class="wrap">
     <h2>Where we plow</h2>
-    <p class="lead">Based in Elkhorn, Wisconsin. Not sure if we cover your street? Call or text and we’ll tell you.</p>
-    <div class="map" id="map" role="img" aria-label="Map of Elkhorn, Wisconsin with the city outlined"></div>
-    <p class="note" style="margin-top:.75rem"><a href="https://www.google.com/maps/search/?api=1&amp;query=Elkhorn%2C+WI">Open in Google Maps</a></p>
+    <div class="areagrid">
+      <div class="map" role="img" aria-label="Outline of the City of Elkhorn, Wisconsin with its main roads and downtown marked">
+      <svg viewBox="0 0 400 490" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <pattern id="bp" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#6fb4ea" stroke-opacity=".07"/></pattern>
+          <radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="#6fb4ea" stop-opacity=".35"/><stop offset="1" stop-color="#6fb4ea" stop-opacity="0"/></radialGradient>
+          <clipPath id="city"><polygon points="95,50 102.5,37.5 120,22.5 137.5,19 162.5,16 169,14 181,29 202,29 203,165 204,222.5 233,226 278,226 295,228 294,250 283,265 278,295 296,300 295,316 265,317 265,435 280,436 326,437.5 330,467.5 276,469 145,469 145,452.5 155,440 170,425 205,425 206,435 135,435 84,437.5 84,380 53,379 53,318 22,317 22,240 35,231 35,212.5 51,210 51,189 80,187.5 81,165 77.5,75 92.5,72.5"/></clipPath>
+        </defs>
+        <rect width="400" height="490" fill="#0a1a35"/>
+        <rect width="400" height="490" fill="url(#bp)"/>
+        <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+          <g stroke="#6fb4ea" stroke-opacity=".28" stroke-width="1.2"><path d="M0 318 L205 318 L400 318"/><path d="M22 275 L105 272 L205 270"/><path d="M110 380 L160 350 L205 330"/></g>
+          <g stroke="#6fb4ea" stroke-width="7"><path d="M201 30 L204 250 L205 470"/><path d="M2 431 L30 416 L65 403 L135 409 L150 404 L175 390 L215 357 L240 330 L270 295 L300 255 L325 220 L350 190 L392 150"/><path d="M207 210 L235 235 L260 280 L272 305 L305 350 L350 395 L396 460"/></g>
+          <g stroke="#0a1a35" stroke-width="4.5"><path d="M201 30 L204 250 L205 470"/><path d="M2 431 L30 416 L65 403 L135 409 L150 404 L175 390 L215 357 L240 330 L270 295 L300 255 L325 220 L350 190 L392 150"/><path d="M207 210 L235 235 L260 280 L272 305 L305 350 L350 395 L396 460"/></g>
+        </g>
+        <polygon points="95,50 102.5,37.5 120,22.5 137.5,19 162.5,16 169,14 181,29 202,29 203,165 204,222.5 233,226 278,226 295,228 294,250 283,265 278,295 296,300 295,316 265,317 265,435 280,436 326,437.5 330,467.5 276,469 145,469 145,452.5 155,440 170,425 205,425 206,435 135,435 84,437.5 84,380 53,379 53,318 22,317 22,240 35,231 35,212.5 51,210 51,189 80,187.5 81,165 77.5,75 92.5,72.5" fill="#6fb4ea" fill-opacity=".1" stroke="none"/>
+        <g clip-path="url(#city)">
+          <ellipse cx="205" cy="305" rx="95" ry="90" fill="url(#glow)"/>
+          <g stroke="#6fb4ea" stroke-opacity=".35" stroke-width=".9" fill="none"><path d="M160 250V365"/><path d="M168 250V365"/><path d="M176 250V365"/><path d="M184 250V365"/><path d="M192 250V365"/><path d="M200 250V365"/><path d="M208 250V365"/><path d="M216 250V365"/><path d="M224 250V365"/><path d="M232 250V365"/><path d="M240 250V365"/><path d="M248 250V365"/><path d="M256 250V365"/><path d="M150 255H265"/><path d="M150 263H265"/><path d="M150 271H265"/><path d="M150 279H265"/><path d="M150 287H265"/><path d="M150 295H265"/><path d="M150 303H265"/><path d="M150 311H265"/><path d="M150 319H265"/><path d="M150 327H265"/><path d="M150 335H265"/><path d="M150 343H265"/><path d="M150 351H265"/><path d="M150 359H265"/></g>
+        </g>
+        <polygon points="95,50 102.5,37.5 120,22.5 137.5,19 162.5,16 169,14 181,29 202,29 203,165 204,222.5 233,226 278,226 295,228 294,250 283,265 278,295 296,300 295,316 265,317 265,435 280,436 326,437.5 330,467.5 276,469 145,469 145,452.5 155,440 170,425 205,425 206,435 135,435 84,437.5 84,380 53,379 53,318 22,317 22,240 35,231 35,212.5 51,210 51,189 80,187.5 81,165 77.5,75 92.5,72.5" fill="none" stroke="#6fb4ea" stroke-width="2.6" stroke-linejoin="round"/>
+        <g transform="translate(205 305)">
+          <path d="M0 0 C -13 -15 -17 -23 -17 -31 A17 17 0 1 1 17 -31 C 17 -23 13 -15 0 0 Z" fill="#6fb4ea" stroke="#e8f2fa" stroke-width="2"/>
+          <text y="-26" text-anchor="middle" font-size="13" fill="#0a1a35" style="stroke:none">HBC</text>
+        </g>
+        <text x="205" y="330" text-anchor="middle" font-size="15" fill="#e8f2fa">Downtown Elkhorn</text>
+        <g transform="translate(366 40)" fill="none" stroke="#6fb4ea" stroke-width="2">
+          <circle r="14"/><path d="M0 -10 L4.5 5 L0 2 L-4.5 5 Z" fill="#6fb4ea"/>
+          <text y="-20" text-anchor="middle" font-size="12" fill="#6fb4ea" style="stroke:none">N</text>
+        </g>
+      </svg>
+      </div>
+      <div class="areatext">
+        <p class="lead">Elkhorn is home. The outlined area is the city limits, and we know these streets.</p>
+        <p>Not sure if we cover your street, or you’re just outside the line? Call or text and we’ll tell you.</p>
+        <p><a class="btn" href="tel:+12623799988">Call or text 262-379-9988</a></p>
+        <p class="note"><a href="https://www.google.com/maps/search/?api=1&amp;query=Elkhorn%2C+WI">Get directions to Elkhorn</a></p>
+      </div>
+    </div>
   </div>
 </section>
 </main>
@@ -186,30 +279,8 @@ footer a{color:var(--ice)}
   </div>
 </footer>
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 (function(){
-  // Elkhorn map: dark base map tinted to the site colors, with the city limits outlined.
-  if(window.L){
-    var map=L.map('map',{scrollWheelZoom:false,zoomControl:true}).setView([42.6728,-88.5445],13);
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png',{
-      maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-    }).addTo(map);
-    var style={color:'#6fb4ea',weight:3,fillColor:'#6fb4ea',fillOpacity:.12};
-    fetch('https://nominatim.openstreetmap.org/search?q='+encodeURIComponent('Elkhorn, Walworth County, Wisconsin')+'&format=jsonv2&polygon_geojson=1&limit=3')
-      .then(function(r){return r.json()})
-      .then(function(list){
-        var hit=list.filter(function(x){return x.geojson&&/Polygon/.test(x.geojson.type)})[0];
-        if(!hit)throw 0;
-        var layer=L.geoJSON(hit.geojson,{style:style}).addTo(map);
-        map.fitBounds(layer.getBounds(),{padding:[24,24]});
-      })
-      .catch(function(){
-        // Fallback: a plain ring around Elkhorn if the boundary can't be loaded.
-        L.circle([42.6728,-88.5445],Object.assign({radius:2800},style)).addTo(map);
-      });
-  }
-
   // Add your business email here once you have it, like 'hello@yourdomain.com'.
   var EMAIL='HBCSnowRemoval@gmail.com';
   var PHONE='+12623799988';
@@ -232,6 +303,46 @@ footer a{color:var(--ice)}
       ? 'mailto:'+EMAIL+'?subject='+encodeURIComponent('Quote request: '+d.get('svc'))+'&body='+encodeURIComponent(body)
       : 'sms:'+PHONE+'?&body='+encodeURIComponent(body);
   });
+
+  // Scheduling: day chips for the next two weeks plus "after the next snowfall".
+  (function(){
+    var box=document.getElementById('days');
+    var dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function chip(val,top,sub,checked){
+      var l=document.createElement('label');l.className='chip';
+      l.innerHTML='<input type="radio" name="day" value=""><span></span>';
+      var i=l.firstChild;i.value=val;i.checked=!!checked;
+      l.lastChild.innerHTML=top+(sub?'<small>'+sub+'</small>':'');
+      box.appendChild(l);
+    }
+    chip('After the next snowfall','Next snow','we come after it falls',true);
+    var t=new Date();
+    for(var k=0;k<14;k++){
+      var d=new Date(t.getFullYear(),t.getMonth(),t.getDate()+k);
+      var label=k===0?'Today':k===1?'Tomorrow':dn[d.getDay()];
+      chip(dn[d.getDay()]+', '+mn[d.getMonth()]+' '+d.getDate(),label,mn[d.getMonth()]+' '+d.getDate());
+    }
+    var sf=document.getElementById('sf'),pick=document.getElementById('pick');
+    function summary(){
+      var d=sf.querySelector('input[name=day]:checked'),tm=sf.querySelector('input[name=tod]:checked');
+      var day=d?d.value:'';
+      return day==='After the next snowfall'?'After the next snowfall':day+', '+(tm?tm.value.toLowerCase():'');
+    }
+    function show(){pick.textContent='Requested: '+summary();}
+    sf.addEventListener('change',show);show();
+    function send(mode){
+      if(!sf.reportValidity())return;
+      var d=new FormData(sf);
+      var body='HBC Snow Removal job request\nWhen: '+summary()+(d.get('day')==='After the next snowfall'?' ('+d.get('tod')+' is fine)':'')+
+        '\nService: '+d.get('svc')+'\nHow often: '+d.get('freq')+'\nName: '+d.get('name')+'\nPhone: '+d.get('phone')+
+        '\nAddress: '+d.get('addr')+'\nNotes: '+(d.get('notes')||'');
+      location.href=mode==='email'
+        ? 'mailto:'+EMAIL+'?subject='+encodeURIComponent('Job request: '+d.get('svc')+' ('+summary()+')')+'&body='+encodeURIComponent(body)
+        : 'sms:'+PHONE+'?&body='+encodeURIComponent(body);
+    }
+    sf.addEventListener('submit',function(e){e.preventDefault();send('email');});
+    document.getElementById('s-text').addEventListener('click',function(){send('text');});
+  })();
 
   // Make it installable on a phone, like the trail cam app.
   var man={name:'HBC Snow Removal',short_name:'HBC Snow',start_url:'./',display:'standalone',background_color:'#0a1a35',theme_color:'#0a1a35',
