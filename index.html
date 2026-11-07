@@ -148,7 +148,7 @@ footer a{color:var(--ice)}
       </ol>
     </div>
     <div class="plans">
-      <div class="plan"><h3>Seasonal</h3><p>One price for the whole winter. We come every time it snows past our trigger depth.</p></div>
+      <div class="plan"><h3>Seasonal</h3><p>One price for the whole winter. We come every time it snows <span id="trigger">a couple of inches</span> or more.</p></div>
       <div class="plan"><h3>Per visit</h3><p>Pay only when we plow. Good if you only want us for the big storms.</p></div>
       <div class="plan"><h3>One-time clear</h3><p>Buried after a big storm? We’ll dig you out.</p></div>
     </div>
@@ -158,7 +158,7 @@ footer a{color:var(--ice)}
 <section id="schedule">
   <div class="wrap">
     <h2>Schedule a job</h2>
-    <p class="lead">Pick the day and time that work for you. We’ll confirm by call or text.</p>
+    <p class="lead"><span id="hours-lead">Pick the day and time that work for you.</span> We’ll confirm by call or text.</p>
     <form id="sf" class="sched">
       <fieldset>
         <legend>Day</legend>
@@ -166,13 +166,7 @@ footer a{color:var(--ice)}
       </fieldset>
       <fieldset>
         <legend>Time of day</legend>
-        <div class="chips">
-          <label class="chip"><input type="radio" name="tod" value="Morning" checked><span>Morning</span></label>
-          <label class="chip"><input type="radio" name="tod" value="Midday"><span>Midday</span></label>
-          <label class="chip"><input type="radio" name="tod" value="Afternoon"><span>Afternoon</span></label>
-          <label class="chip"><input type="radio" name="tod" value="Evening"><span>Evening</span></label>
-          <label class="chip"><input type="radio" name="tod" value="Any time"><span>Any time</span></label>
-        </div>
+        <div class="chips" id="slots"></div>
       </fieldset>
       <div class="row">
         <label>Service
@@ -274,13 +268,39 @@ footer a{color:var(--ice)}
 
 <footer>
   <div class="wrap">
-    <div><strong>HBC Snow Removal</strong><br>Elkhorn, WI and surrounding area</div>
+    <div><strong>HBC Snow Removal</strong><br>Elkhorn, WI and surrounding area<br><span id="hours-foot"></span></div>
     <div><a href="tel:+12623799988">262-379-9988</a><br><a id="mail" href="#" hidden></a></div>
   </div>
 </footer>
 
 <script>
 (function(){
+  /* ============ EDIT THESE ============
+     Everything you're likely to change is in this block. */
+  var CONFIG={
+    // Shown above the scheduler and in the footer.
+    hoursLead:'We book any time, day or night.',
+    hoursFooter:'Open 24/7 during snow. Call or text anytime.',
+    // How many days ahead people can pick (not counting "Next snow").
+    daysAhead:14,
+    // Time windows people can choose. Add, remove, or rename freely.
+    // 'time' is shown under the name. Leave it '' for no hours.
+    // Mark one with isDefault:true to pre-select it.
+    slots:[
+      {name:'Overnight', time:'12 AM – 6 AM'},
+      {name:'Morning',   time:'6 AM – 10 AM'},
+      {name:'Midday',    time:'10 AM – 2 PM'},
+      {name:'Afternoon', time:'2 PM – 6 PM'},
+      {name:'Evening',   time:'6 PM – 12 AM'},
+      {name:'Any time',  time:'', isDefault:true}
+    ],
+    // Days you can't take jobs, as 'YYYY-MM-DD'. Example: ['2026-12-25']
+    closedDates:[],
+    // Snow depth that triggers a seasonal-plan visit, shown in the Seasonal card.
+    triggerDepth:'2 inches'
+  };
+  /* ============ END OF EDITS ============ */
+
   // Add your business email here once you have it, like 'hello@yourdomain.com'.
   var EMAIL='HBCSnowRemoval@gmail.com';
   var PHONE='+12623799988';
@@ -304,36 +324,53 @@ footer a{color:var(--ice)}
       : 'sms:'+PHONE+'?&body='+encodeURIComponent(body);
   });
 
-  // Scheduling: day chips for the next two weeks plus "after the next snowfall".
+  // Fill in hours and trigger text from CONFIG.
+  document.getElementById('hours-lead').textContent=CONFIG.hoursLead;
+  document.getElementById('hours-foot').textContent=CONFIG.hoursFooter;
+  document.getElementById('trigger').textContent=CONFIG.triggerDepth;
+
+  // Scheduling: "After the next snowfall" plus the next CONFIG.daysAhead open days, and CONFIG.slots.
   (function(){
-    var box=document.getElementById('days');
     var dn=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mn=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    function chip(val,top,sub,checked){
-      var l=document.createElement('label');l.className='chip';
-      l.innerHTML='<input type="radio" name="day" value=""><span></span>';
-      var i=l.firstChild;i.value=val;i.checked=!!checked;
-      l.lastChild.innerHTML=top+(sub?'<small>'+sub+'</small>':'');
-      box.appendChild(l);
-    }
-    chip('After the next snowfall','Next snow','we come after it falls',true);
-    var t=new Date();
-    for(var k=0;k<14;k++){
-      var d=new Date(t.getFullYear(),t.getMonth(),t.getDate()+k);
-      var label=k===0?'Today':k===1?'Tomorrow':dn[d.getDay()];
-      chip(dn[d.getDay()]+', '+mn[d.getMonth()]+' '+d.getDate(),label,mn[d.getMonth()]+' '+d.getDate());
-    }
     var sf=document.getElementById('sf'),pick=document.getElementById('pick');
+    function chip(box,name,val,top,sub,checked){
+      var l=document.createElement('label');l.className='chip';
+      var i=document.createElement('input');i.type='radio';i.name=name;i.value=val;i.checked=!!checked;
+      var sp=document.createElement('span');sp.appendChild(document.createTextNode(top));
+      if(sub){var sm=document.createElement('small');sm.textContent=sub;sp.appendChild(sm);}
+      l.appendChild(i);l.appendChild(sp);box.appendChild(l);
+    }
+    function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+
+    var days=document.getElementById('days');
+    chip(days,'day','After the next snowfall','Next snow','we come after it falls',true);
+    var t=new Date(),shown=0,k=0;
+    while(shown<CONFIG.daysAhead&&k<CONFIG.daysAhead+60){
+      var d=new Date(t.getFullYear(),t.getMonth(),t.getDate()+k);k++;
+      if(CONFIG.closedDates.indexOf(iso(d))>-1)continue;
+      var label=k===1?'Today':k===2?'Tomorrow':dn[d.getDay()];
+      chip(days,'day',dn[d.getDay()]+', '+mn[d.getMonth()]+' '+d.getDate(),label,mn[d.getMonth()]+' '+d.getDate());
+      shown++;
+    }
+
+    var slots=document.getElementById('slots'),slotTime={};
+    var def=CONFIG.slots.filter(function(x){return x.isDefault})[0]||CONFIG.slots[0];
+    CONFIG.slots.forEach(function(x){slotTime[x.name]=x.time;chip(slots,'tod',x.name,x.name,x.time,x===def);});
+
+    function slotText(){
+      var tm=sf.querySelector('input[name=tod]:checked');if(!tm)return '';
+      var n=tm.value;return slotTime[n]?n.toLowerCase()+' ('+slotTime[n]+')':n.toLowerCase();
+    }
     function summary(){
-      var d=sf.querySelector('input[name=day]:checked'),tm=sf.querySelector('input[name=tod]:checked');
-      var day=d?d.value:'';
-      return day==='After the next snowfall'?'After the next snowfall':day+', '+(tm?tm.value.toLowerCase():'');
+      var d=sf.querySelector('input[name=day]:checked'),day=d?d.value:'';
+      return day==='After the next snowfall'?'After the next snowfall':day+', '+slotText();
     }
     function show(){pick.textContent='Requested: '+summary();}
     sf.addEventListener('change',show);show();
     function send(mode){
       if(!sf.reportValidity())return;
       var d=new FormData(sf);
-      var body='HBC Snow Removal job request\nWhen: '+summary()+(d.get('day')==='After the next snowfall'?' ('+d.get('tod')+' is fine)':'')+
+      var body='HBC Snow Removal job request\nWhen: '+summary()+(d.get('day')==='After the next snowfall'?' (preferred time: '+slotText()+')':'')+
         '\nService: '+d.get('svc')+'\nHow often: '+d.get('freq')+'\nName: '+d.get('name')+'\nPhone: '+d.get('phone')+
         '\nAddress: '+d.get('addr')+'\nNotes: '+(d.get('notes')||'');
       location.href=mode==='email'
