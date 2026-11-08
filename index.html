@@ -201,6 +201,13 @@ h2{font-size:clamp(2.2rem,5vw,3.4rem);margin-bottom:.75rem}
 .quotes blockquote{margin:0;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--ice);border-radius:.25rem;padding:1.2rem 1.3rem}
 .quotes p{margin:0 0 .8rem;font-size:1.1rem}
 .quotes cite{font-style:normal;font-weight:600;color:var(--muted);font-size:.95rem}
+.faq{max-width:44rem;display:grid;gap:.75rem;margin-top:1.5rem}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:0 1.2rem}
+.faq summary{cursor:pointer;font-weight:600;padding:1rem 0;list-style:none;display:flex;justify-content:space-between;gap:1rem}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:800 1.4rem/1 var(--head);color:var(--ice)}
+.faq details[open] summary::after{content:"−"}
+.faq details p{margin:0 0 1rem;color:var(--muted)}
 .about{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:2.5rem;align-items:start}
 .about p{margin:0 0 1rem;max-width:34rem}
 form{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:1.5rem;display:grid;gap:1rem}
@@ -227,6 +234,7 @@ footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:1rem}
 footer a{color:var(--ice)}
 @media (max-width:40rem){footer{padding-bottom:5rem}}
 </style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much does it cost?", "acceptedAnswer": {"@type": "Answer", "text": "We price by the size of the job, and jobs start at $50. Tell us what you need cleared and we\u2019ll give you a clear price before any work starts."}}, {"@type": "Question", "name": "When can you come out?", "acceptedAnswer": {"@type": "Answer", "text": "Whenever you want us. Pick a day and time in the scheduler above, choose \u201cNext snow\u201d and we\u2019ll come after the next snowfall, or call or text 262-379-9988."}}, {"@type": "Question", "name": "How do I pay?", "acceptedAnswer": {"@type": "Answer", "text": "We take cash, check, or Venmo."}}, {"@type": "Question", "name": "Do you cover my street?", "acceptedAnswer": {"@type": "Answer", "text": "We\u2019re based in Elkhorn, WI. If you\u2019re not sure we cover your street, call or text and we\u2019ll tell you."}}, {"@type": "Question", "name": "How do I get a quote?", "acceptedAnswer": {"@type": "Answer", "text": "Fill out the quote form on this page, or call or text 262-379-9988. It\u2019s free."}}]}</script>
 </head>
 <body>
 <header class="hero">
@@ -277,7 +285,7 @@ footer a{color:var(--ice)}
   <div class="wrap how">
     <div>
       <h2>How it works</h2>
-      <p class="lead">Simple pricing, no fine print.</p>
+      <p class="lead">Priced by the size of the job, starting at $50. You get a clear number before any work starts.</p>
       <ol>
         <li><div><strong>Request a quote</strong><span>Text or call with your address and what you need cleared.</span></div></li>
         <li><div><strong>We confirm the price</strong><span>You get a clear number before any work starts.</span></div></li>
@@ -285,7 +293,7 @@ footer a{color:var(--ice)}
       </ol>
     </div>
     <div class="plans">
-      <div class="plan"><h3>Seasonal</h3><p>One price for the whole winter. We come every time it snows <span id="trigger">a couple of inches</span> or more.</p></div>
+      <div class="plan"><h3>Seasonal</h3><p>One price for the winter. Tell us how often you want us out.</p></div>
       <div class="plan"><h3>Per visit</h3><p>Pay only when we plow. Good if you only want us for the big storms.</p></div>
       <div class="plan"><h3>One-time clear</h3><p>Buried after a big storm? We’ll dig you out.</p></div>
     </div>
@@ -331,6 +339,13 @@ footer a{color:var(--ice)}
       <p class="pick done" id="done" role="status" hidden></p>
       <p class="note" id="s-note">Your email or messages app opens with the request filled in. Nothing is booked until we confirm with you.</p>
     </form>
+  </div>
+</section>
+
+<section id="faq">
+  <div class="wrap">
+    <h2>Questions</h2>
+    <div class="faq"><details><summary>How much does it cost?</summary><p>We price by the size of the job, and jobs start at $50. Tell us what you need cleared and we’ll give you a clear price before any work starts.</p></details><details><summary>When can you come out?</summary><p>Whenever you want us. Pick a day and time in the scheduler above, choose “Next snow” and we’ll come after the next snowfall, or call or text 262-379-9988.</p></details><details><summary>How do I pay?</summary><p>We take cash, check, or Venmo.</p></details><details><summary>Do you cover my street?</summary><p>We’re based in Elkhorn, WI. If you’re not sure we cover your street, call or text and we’ll tell you.</p></details><details><summary>How do I get a quote?</summary><p>Fill out the quote form on this page, or call or text 262-379-9988. It’s free.</p></details></div>
   </div>
 </section>
 
@@ -429,8 +444,6 @@ footer a{color:var(--ice)}
     daysAhead:90,
     // Days you can't take jobs, as 'YYYY-MM-DD'. Example: ['2026-12-25']
     closedDates:[],
-    // Snow depth that triggers a seasonal-plan visit, shown in the Seasonal card.
-    triggerDepth:'2 inches',
     // Paste your Google Apps Script web app URL here to send bookings straight
     // to your Google Calendar (see GOOGLE-CALENDAR-SETUP.txt). Leave '' to use email/text only.
     // Photos for the "Our work" section. The section stays hidden until you add some.
@@ -475,7 +488,6 @@ footer a{color:var(--ice)}
   var HOURS=fmtHour(CONFIG.openHour)+' to '+fmtHour(CONFIG.closeHour);
   document.getElementById('hours-lead').textContent='Booking hours are '+HOURS+'.';
   document.getElementById('hours-foot').textContent='Hours: '+HOURS;
-  document.getElementById('trigger').textContent=CONFIG.triggerDepth;
 
   // Scheduler: month calendar + time windows.
   (function(){
