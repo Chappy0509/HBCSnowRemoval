@@ -6,6 +6,88 @@
 <meta name="theme-color" content="#0a1a35">
 <meta name="description" content="HBC Snow Removal in Elkhorn, WI. Driveway plowing, parking lots, walks, and salting. Call or text 262-379-9988.">
 <title>HBC Snow Removal | Elkhorn, WI</title>
+<link rel="canonical" href="https://hbcsnowremoval.com/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="HBC Snow Removal">
+<meta property="og:title" content="HBC Snow Removal | Elkhorn, WI">
+<meta property="og:description" content="Driveway and parking lot plowing, walks, and salting in Elkhorn, WI. Get a free quote or schedule a job online.">
+<meta property="og:url" content="https://hbcsnowremoval.com/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{
+ "@context": "https://schema.org",
+ "@type": "LocalBusiness",
+ "@id": "https://hbcsnowremoval.com/#business",
+ "name": "HBC Snow Removal",
+ "url": "https://hbcsnowremoval.com/",
+ "telephone": "+1-262-379-9988",
+ "email": "HBCSnowRemoval@gmail.com",
+ "description": "Locally owned snow removal in Elkhorn, Wisconsin. Driveway and parking lot plowing, walk and step shoveling, and salt and ice melt for homes and small businesses.",
+ "areaServed": {
+  "@type": "City",
+  "name": "Elkhorn",
+  "containedInPlace": {
+   "@type": "State",
+   "name": "Wisconsin"
+  }
+ },
+ "address": {
+  "@type": "PostalAddress",
+  "addressLocality": "Elkhorn",
+  "addressRegion": "WI",
+  "addressCountry": "US"
+ },
+ "openingHoursSpecification": [
+  {
+   "@type": "OpeningHoursSpecification",
+   "dayOfWeek": [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+   ],
+   "opens": "05:00",
+   "closes": "19:00"
+  }
+ ],
+ "hasOfferCatalog": {
+  "@type": "OfferCatalog",
+  "name": "Snow removal services",
+  "itemListElement": [
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@type": "Service",
+     "name": "Driveway plowing"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@type": "Service",
+     "name": "Parking lot plowing"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@type": "Service",
+     "name": "Walk and step shoveling"
+    }
+   },
+   {
+    "@type": "Offer",
+    "itemOffered": {
+     "@type": "Service",
+     "name": "Salt and ice melt"
+    }
+   }
+  ]
+ }
+}</script>
+
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230a1a35'/%3E%3Ctext x='32' y='42' font-size='26' font-family='Arial' font-weight='900' text-anchor='middle' fill='%236fb4ea'%3EHBC%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@1,800&family=Barlow:wght@400;500;600&display=swap">
 <style>
@@ -100,6 +182,25 @@ h2{font-size:clamp(2.2rem,5vw,3.4rem);margin-bottom:.75rem}
 .cal-grid button[aria-pressed=true]{background:var(--ice);color:#0a1a35;font-weight:700}
 .pick.done{color:var(--text);background:var(--bg2);border-radius:.3rem;padding:.7rem .9rem}
 .sched{position:relative}
+.work{background:var(--bg)}
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(15rem,1fr));gap:1rem;align-items:start}
+@media (min-width:36rem){.gallery figure.wide{grid-column:span 2}}
+.gallery figure{margin:0;background:var(--card);border:1px solid var(--line);border-radius:.25rem;overflow:hidden}
+.gallery .shot{display:block;width:100%;padding:0;border:0;background:none;cursor:zoom-in}
+.gallery img{display:block;width:100%;aspect-ratio:4/3;object-fit:cover}
+.gallery .pair{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--line)}
+.gallery .pair div{position:relative;background:var(--card)}
+.gallery .pair em{position:absolute;left:.4rem;top:.4rem;background:#0a1a35cc;color:#e8f2fa;font:800 italic 1rem/1 var(--head);padding:.25rem .45rem;border-radius:.2rem}
+.gallery figcaption{padding:.6rem .8rem;font-size:.95rem;color:var(--muted)}
+#lightbox{border:0;padding:0;background:#0a1a35;color:#e8f2fa;max-width:min(92vw,60rem);border-radius:.3rem}
+#lightbox::backdrop{background:#0a1a35e6}
+#lightbox img{display:block;max-width:100%;max-height:80vh;margin:0 auto}
+#lightbox p{margin:0;padding:.7rem 1rem}
+#lb-close{position:absolute;right:.5rem;top:.5rem;width:2.5rem;height:2.5rem;border:0;border-radius:50%;background:#0a1a35cc;color:#e8f2fa;font-size:1.6rem;line-height:1;cursor:pointer}
+.quotes{margin-top:1.5rem;display:grid;grid-template-columns:repeat(auto-fit,minmax(16rem,1fr));gap:1rem}
+.quotes blockquote{margin:0;background:var(--card);border:1px solid var(--line);border-left:6px solid var(--ice);border-radius:.25rem;padding:1.2rem 1.3rem}
+.quotes p{margin:0 0 .8rem;font-size:1.1rem}
+.quotes cite{font-style:normal;font-weight:600;color:var(--muted);font-size:.95rem}
 .about{display:grid;grid-template-columns:repeat(auto-fit,minmax(18rem,1fr));gap:2.5rem;align-items:start}
 .about p{margin:0 0 1rem;max-width:34rem}
 form{background:var(--card);border:1px solid var(--line);border-radius:.25rem;padding:1.5rem;display:grid;gap:1rem}
@@ -152,6 +253,23 @@ footer a{color:var(--ice)}
       <div class="svc"><h3>Walks and steps</h3><p>Hand-shoveled sidewalks, porches, steps, and paths to the door.</p></div>
       <div class="svc"><h3>Salt and ice melt</h3><p>Treated after the plow so the surface doesn’t refreeze overnight.</p></div>
     </div>
+  </div>
+</section>
+
+<section class="work" id="work" hidden>
+  <div class="wrap">
+    <h2>Our work</h2>
+    <p class="lead">Real driveways and lots we’ve cleared in and around Elkhorn.</p>
+    <div class="gallery" id="gallery"></div>
+  </div>
+</section>
+<dialog id="lightbox" aria-label="Photo viewer"><button type="button" id="lb-close" aria-label="Close photo">×</button><img id="lb-img" alt=""><p id="lb-cap"></p></dialog>
+
+<section id="reviews" hidden>
+  <div class="wrap">
+    <h2>What customers say</h2>
+    <div class="quotes" id="quotes"></div>
+    <p class="note" id="rev-link" hidden style="margin-top:1rem"><a id="rev-a" href="#" rel="noopener">Used HBC? Leave us a review</a></p>
   </div>
 </section>
 
@@ -293,7 +411,7 @@ footer a{color:var(--ice)}
 <footer>
   <div class="wrap">
     <div><strong>HBC Snow Removal</strong><br>Elkhorn, WI and surrounding area<br><span id="hours-foot"></span></div>
-    <div><a href="tel:+12623799988">262-379-9988</a><br><a id="mail" href="#" hidden></a></div>
+    <div><a href="tel:+12623799988">262-379-9988</a><br><a id="mail" href="#" hidden></a><br><a id="foot-rev" href="#" hidden rel="noopener">Leave us a review</a></div>
   </div>
 </footer>
 
@@ -315,6 +433,16 @@ footer a{color:var(--ice)}
     triggerDepth:'2 inches',
     // Paste your Google Apps Script web app URL here to send bookings straight
     // to your Google Calendar (see GOOGLE-CALENDAR-SETUP.txt). Leave '' to use email/text only.
+    // Photos for the "Our work" section. The section stays hidden until you add some.
+    // Put image files in an "images" folder next to index.html, then list them like this:
+    //   {src:'images/truck.jpg', alt:'HBC plow truck in Elkhorn', caption:'Our truck'},
+    //   {before:'images/b1.jpg', src:'images/a1.jpg', alt:'Driveway', caption:'Driveway on Lake St'}  <- before/after
+    photos:[],
+    // Customer reviews. The section stays hidden until you add one. Only use real reviews, with the customer's OK.
+    //   {text:'They had my driveway done before I woke up.', name:'Dave R.', town:'Elkhorn'},
+    reviews:[],
+    // Your Google review link (from your Google Business Profile). Adds a "Leave a review" link to the footer.
+    googleReviewUrl:'',
     scriptUrl:'https://script.google.com/macros/s/AKfycbyuWFz_sudYj0NptSm1x7Aomgu08pTzaCWUrOmQhRzfIz4eX_tiK1yC_p6sP2oZtrLalg/exec'
   };
   /* ============ END OF EDITS ============ */
@@ -460,6 +588,55 @@ footer a{color:var(--ice)}
     document.getElementById('s-text').addEventListener('click',function(){if(sf.reportValidity())viaApp('text');});
     em.addEventListener('click',function(){if(sf.reportValidity())viaApp('email');});
     update();render();
+  })();
+
+  // "Our work" gallery from CONFIG.photos (hidden when empty).
+  (function(){
+    var list=CONFIG.photos||[];if(!list.length)return;
+    var g=document.getElementById('gallery'),lb=document.getElementById('lightbox'),lbi=document.getElementById('lb-img'),lbc=document.getElementById('lb-cap');
+    function img(src,alt){var i=new Image();i.src=src;i.alt=alt||'';i.loading='lazy';i.decoding='async';return i;}
+    function open(src,alt,cap){lbi.src=src;lbi.alt=alt||'';lbc.textContent=cap||'';if(lb.showModal)lb.showModal();}
+    list.forEach(function(p){
+      var f=document.createElement('figure');
+      if(p.before){
+        f.className='wide';
+        var pr=document.createElement('div');pr.className='pair';
+        [[p.before,'Before'],[p.src,'After']].forEach(function(x){
+          var d=document.createElement('div'),b=document.createElement('button');b.type='button';b.className='shot';
+          b.setAttribute('aria-label','Open '+x[1].toLowerCase()+' photo: '+(p.alt||p.caption||''));
+          b.appendChild(img(x[0],(p.alt||'')+' '+x[1].toLowerCase()));
+          b.onclick=function(){open(x[0],p.alt,(p.caption?p.caption+' - ':'')+x[1]);};
+          var em=document.createElement('em');em.textContent=x[1];d.appendChild(b);d.appendChild(em);pr.appendChild(d);
+        });
+        f.appendChild(pr);
+      }else{
+        var b=document.createElement('button');b.type='button';b.className='shot';
+        b.setAttribute('aria-label','Open photo: '+(p.alt||p.caption||''));
+        b.appendChild(img(p.src,p.alt));b.onclick=function(){open(p.src,p.alt,p.caption);};f.appendChild(b);
+      }
+      if(p.caption){var c=document.createElement('figcaption');c.textContent=p.caption;f.appendChild(c);}
+      g.appendChild(f);
+    });
+    document.getElementById('work').hidden=false;
+    document.getElementById('lb-close').onclick=function(){lb.close();};
+    lb.addEventListener('click',function(e){if(e.target===lb)lb.close();});
+  })();
+
+  // Reviews from CONFIG.reviews (hidden when empty).
+  (function(){
+    if(CONFIG.googleReviewUrl){
+      var fr=document.getElementById('foot-rev');fr.href=CONFIG.googleReviewUrl;fr.hidden=false;
+    }
+    var list=CONFIG.reviews||[];if(!list.length)return;
+    var box=document.getElementById('quotes');
+    list.forEach(function(r){
+      var q=document.createElement('blockquote'),p=document.createElement('p'),c=document.createElement('cite');
+      p.textContent='“'+r.text+'”';
+      c.textContent='— '+r.name+(r.town?', '+r.town:'');
+      q.appendChild(p);q.appendChild(c);box.appendChild(q);
+    });
+    if(CONFIG.googleReviewUrl){var a=document.getElementById('rev-a');a.href=CONFIG.googleReviewUrl;document.getElementById('rev-link').hidden=false;}
+    document.getElementById('reviews').hidden=false;
   })();
 
   // Make it installable on a phone, like the trail cam app.
